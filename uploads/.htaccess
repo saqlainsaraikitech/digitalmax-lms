@@ -1,0 +1,52 @@
+# =====================================================
+# DigitalMax LMS — uploads/ security
+# - Koi executable/script browser se run nahi hogi
+# - Sirf allowlist wali files (images + documents) serve hongi
+# =====================================================
+
+Options -Indexes -ExecCGI
+
+# PHP handlers hatao (double-extension tricks se bachao)
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .phar
+RemoveType .php .phtml
+
+# PHP engine off (jahan mod_php ho; PHP-FPM par ye lines auto-skip)
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag engine off
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # 1) File NAAM me kahin bhi script extension ho (shell.php.jpg jese tricks) -> 403
+  RewriteRule \.(php[0-9]*|phtml|phar|sh|bash|pl|py|cgi|asp|aspx|jsp)(\.|$) - [F,NC,L]
+
+  # 2) Script types seedha block -> 403
+  RewriteRule \.(js|html?)$ - [F,NC,L]
+
+  # 3) Allowlist ke bahar har file -> 403 (sirf images + documents serve hon)
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule !\.(jpg|jpeg|png|webp|gif|pdf|zip|doc|docx|xls|xlsx|ppt|pptx|csv|txt|mp4)$ - [F,NC,L]
+</IfModule>
+
+# .ht* files kabhi serve na hon
+<FilesMatch "^\.ht">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# MIME sniffing off (browser uploaded file ko ghalat type na samjhe)
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>

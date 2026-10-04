@@ -1,0 +1,27 @@
+# =====================================================
+# DigitalMax LMS — root security
+# =====================================================
+
+Options -Indexes
+
+# Sensitive files kabhi browser se na khulen
+# (config.php me DB password hai, .sql me table structure)
+<FilesMatch "(?i)^(config\.php|install\.php|\.htaccess|\.htpasswd|.*\.sql)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# backups/ folder seedha block (download sirf admin panel se hota hai)
+RedirectMatch 403 ^/backups/.*$
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
