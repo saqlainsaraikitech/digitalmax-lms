@@ -93,7 +93,7 @@ $initial = mb_strtoupper(mb_substr(trim($user['name'] ?: 'U'), 0, 1));
         <img src="../assets/logo.png" alt="logo" class="dm-logo">
         <div>
           <div class="dm-brand-name"><?= e(setting('site_name', SITE_NAME)) ?></div>
-          <span class="dm-role-pill"><?= e(ucfirst($role)) ?> Panel</span>
+          <span class="dm-role-pill"><?= e(ucfirst($role)) ?></span>
         </div>
       </div>
     </div>
@@ -118,7 +118,7 @@ $initial = mb_strtoupper(mb_substr(trim($user['name'] ?: 'U'), 0, 1));
     <header class="dm-topbar">
       <button class="dm-burger" onclick="document.body.classList.toggle('dm-open')" aria-label="Menu"><?= icon('menu', 20) ?></button>
       <div>
-        <div class="dm-crumb"><?= e(setting('site_name', SITE_NAME)) ?> · <?= e(ucfirst($role)) ?></div>
+        <div class="dm-crumb"><?= e(ucfirst($role)) ?></div>
         <h1 class="dm-title"><?= e($page_title ?? 'Dashboard') ?></h1>
       </div>
       <div class="dm-topbar-right">

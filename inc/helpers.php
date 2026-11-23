@@ -332,7 +332,7 @@ function status_badge($status) {
     ];
     $cls = $map[$status] ?? 'bg-gray-200 text-gray-700';
     $label = ucfirst(str_replace('_', ' ', $status));
-    return '<span class="px-2 py-1 rounded text-xs font-semibold ' . $cls . '">' . e($label) . '</span>';
+    return '<span class="px-2 py-0.5 rounded text-xs font-medium ' . $cls . '">' . e($label) . '</span>';
 }
 
 /* ============ CSRF protection ============ */
@@ -461,21 +461,21 @@ function batch_badge($b) {
     $name = e($b['batch_name']);
     if ($s === 'active') {
         $days = batch_days_left($b);
-        $extra = $days !== null ? " (Ends in $days Day" . ($days === 1 ? '' : 's') . ")" : '';
-        return '<span class="inline-block text-xs font-bold px-3 py-1.5 rounded-full bg-green-100 text-green-800 border border-green-300">' . icon('dot',16) . ' ' . $name . ' | Active' . e($extra) . '</span>';
+        $extra = $days !== null ? ", ends in $days day" . ($days === 1 ? '' : 's') : '';
+        return '<span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded bg-green-50 text-green-800">' . icon('dot',8) . $name . ' · Active' . e($extra) . '</span>';
     }
     if ($s === 'completed') {
-        return '<span class="inline-block text-xs font-bold px-3 py-1.5 rounded-full bg-red-100 text-red-800 border border-red-300">' . icon('dot',16) . ' ' . $name . ' | Batch Completed (Archive Access Only)</span>';
+        return '<span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-700">' . icon('dot',8) . $name . ' · Completed, archive access</span>';
     }
     $sd = !empty($b['start_date']) ? date('d M Y', strtotime($b['start_date'])) : '';
-    return '<span class="inline-block text-xs font-bold px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 border border-amber-300">' . icon('dot', 11) . ' ' . $name . ' | Upcoming' . ($sd ? ' (Starts ' . e($sd) . ')' : '') . '</span>';
+    return '<span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded bg-amber-50 text-amber-800">' . icon('dot', 8) . $name . ' · Upcoming' . ($sd ? ', starts ' . e($sd) : '') . '</span>';
 }
 /** Admin list ke liye chhota badge: [Batch 1 - Active] */
 function batch_badge_short($b) {
     if (!$b) return '<span class="text-xs text-gray-400">—</span>';
     $s = batch_status($b);
     $cls = $s === 'active' ? 'bg-green-100 text-green-700' : ($s === 'completed' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700');
-    return '<span class="text-xs font-semibold px-2 py-0.5 rounded-full ' . $cls . '">[' . e($b['batch_name']) . ' - ' . batch_status_label($s) . ']</span>';
+    return '<span class="text-xs font-medium px-2 py-0.5 rounded ' . $cls . '">' . e($b['batch_name']) . ' · ' . batch_status_label($s) . '</span>';
 }
 /** Course ke batches */
 function course_batches($course_id) {
@@ -847,6 +847,28 @@ function ban_student_modal() {
 /* ============ SVG icon system (emojis ki jagah professional icons) ============ */
 
 /** Lucide-style inline SVG icon. size = px. */
+/**
+ * Watch ring — the LMS signature. A lecture counts once 3 minutes are watched;
+ * the ring fills with progress (0–100). Used on course progress, the player and lecture lists.
+ */
+function watch_ring($pct, $size = 20, $label = '') {
+    $pct = max(0, min(100, (int)$pct));
+    $sw = $size >= 32 ? 3 : 2;
+    $r = ($size - $sw) / 2;
+    $c = 2 * M_PI * $r;
+    $off = $c * (1 - $pct / 100);
+    $mid = $size / 2;
+    $aria = $label !== '' ? $label : $pct . '% watched';
+    $svg = sprintf('<svg class="wring" width="%1$d" height="%1$d" viewBox="0 0 %1$d %1$d" role="img" aria-label="%2$s">', $size, e($aria));
+    $svg .= sprintf('<circle class="wr-track" cx="%1$s" cy="%1$s" r="%2$s" stroke-width="%3$s"/>', $mid, round($r, 2), $sw);
+    if ($pct > 0) {
+        $svg .= sprintf('<circle class="wr-fill" cx="%1$s" cy="%1$s" r="%2$s" stroke-width="%3$s" stroke-dasharray="%4$s" stroke-dashoffset="%5$s" transform="rotate(-90 %1$s %1$s)"/>',
+            $mid, round($r, 2), $sw, round($c, 2), round($off, 2));
+    }
+    if ($pct === 100) $svg .= sprintf('<circle class="wr-done" cx="%1$s" cy="%1$s" r="%2$s"/>', $mid, round($size / 7, 2));
+    return $svg . '</svg>';
+}
+
 function icon($name, $size = 16) {
     static $P = null;
     if ($P === null) $P = [
@@ -936,7 +958,7 @@ function icon($name, $size = 16) {
         'menu' => '<line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/>',
         'dot' => 'DOT',
     ];
-    $svg_open = '<svg class=\'ico\' width=\'%d\' height=\'%d\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\' aria-hidden=\'true\'>';
+    $svg_open = '<svg class=\'ico\' width=\'%d\' height=\'%d\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\' aria-hidden=\'true\'>';
     if ($name === 'dot') return sprintf('<svg class=\'ico\' width=\'%d\' height=\'%d\' viewBox=\'0 0 24 24\' aria-hidden=\'true\'><circle cx=\'12\' cy=\'12\' r=\'6\' fill=\'currentColor\'/></svg>', (int)$size, (int)$size);
     $p = $P[$name] ?? '';
     if ($p === '' || $p === 'DOT') return '';

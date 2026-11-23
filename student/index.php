@@ -71,34 +71,35 @@ try {
 ?>
 
 <header class="std-masthead">
-  <div class="std-date"><?= date('l, j F Y') ?></div>
-  <h1 class="std-greet">Assalam-o-Alaikum, <?= e($first) ?>.</h1>
-  <div class="std-rule"></div>
+  <div class="std-date">Assalam-o-Alaikum, <?= e($first) ?> · <?= date('l, j F') ?></div>
+  <h1 class="std-greet">Aapki classes</h1>
   <p class="std-sub"><b><?= count($courses) ?></b> enrolled<span class="dot">·</span><b><?= $hero_avg ?>%</b> average progress<?php if ($pend_pay): ?><span class="dot">·</span><b><?= $pend_pay ?></b> payment pending<?php endif; ?></p>
 </header>
 
 <?php if ($resume):
   $rs = (int)($resume['seconds'] ?? 0);
-  $rlabel = $rs > 0 ? ' · ' . gmdate($rs >= 3600 ? 'H:i:s' : 'i:s', $rs) . ' se' : ''; ?>
+  $rlabel = $rs > 0 ? ' · ' . gmdate($rs >= 3600 ? 'H:i:s' : 'i:s', $rs) . ' se' : '';
+  // 3-minute watch rule: ring dikhata hai lecture kitna "count" ho chuka
+  $rpct = (int)min(100, round($rs / 180 * 100)); ?>
 <a class="resume-cinema" href="lecture.php?course_id=<?= (int)$resume['course_id'] ?>&lecture_id=<?= (int)$resume['lid'] ?>">
-  <div class="rc-kicker">Continue learning</div>
-  <div class="rc-title"><?= e($resume['lt']) ?></div>
-  <div class="rc-meta"><?= e($resume['ct']) ?><?= e($rlabel) ?></div>
-  <span class="rc-cta"><span class="rc-playbtn"><?= icon('play', 20) ?></span> Resume lecture</span>
+  <?= watch_ring($rpct, 56, $rpct >= 100 ? 'Counted as watched' : $rpct . '% of the 3-minute minimum') ?>
+  <div class="rc-body">
+    <div class="rc-kicker">Continue learning</div>
+    <div class="rc-title"><?= e($resume['lt']) ?></div>
+    <div class="rc-meta"><?= e($resume['ct']) ?><?= e($rlabel) ?></div>
+  </div>
+  <span class="rc-cta"><span class="rc-playbtn"><?= icon('play', 18) ?></span><span class="hidden sm:inline">Resume</span></span>
 </a>
 <?php endif; ?>
 
 <?php if ($urgent_ann):
   $plain = trim(strip_tags($urgent_ann['message']));
   $preview = mb_substr($plain, 0, 90); ?>
-  <div class="rounded-xl shadow mb-5 p-4 flex items-center gap-3 flex-wrap" style="background:linear-gradient(90deg,#fef2f2,#fdf6ec); border:1px solid #fca5a5">
-    <span class="text-2xl"><?= icon('bell',16) ?></span>
-    <div class="flex-1 min-w-52">
-      <b class="text-red-800">Important: <?= e($urgent_ann['title']) ?></b>
-      <span class="text-sm text-gray-600"> — <?= e($preview) ?><?= mb_strlen($plain) > 90 ? '…' : '' ?></span>
-    </div>
-    <a href="announcements.php" class="text-sm font-bold underline" style="color:#c74b25">Read More →</a>
-    <a href="index.php?dismiss_ann=<?= (int)$urgent_ann['id'] ?>" class="text-gray-400 hover:text-gray-600 text-lg leading-none" title="Dismiss"><?= icon('x',16) ?></a>
+  <div class="dm-notice">
+    <?= icon('bell', 16) ?>
+    <div class="dn-text"><b><?= e($urgent_ann['title']) ?></b> · <?= e($preview) ?><?= mb_strlen($plain) > 90 ? '…' : '' ?></div>
+    <a href="announcements.php">Read notice</a>
+    <a href="index.php?dismiss_ann=<?= (int)$urgent_ann['id'] ?>" class="dn-close" title="Dismiss" aria-label="Dismiss"><?= icon('x', 16) ?></a>
   </div>
 <?php endif; ?>
 
@@ -117,7 +118,7 @@ foreach ($courses as $vc) {
 
 <?php if (!$courses): ?>
   <div class="dm-card"><div class="std-empty">
-    <h3>Abhi koi course nahi.</h3>
+    <h3>Abhi koi course nahi</h3>
     <p>Course Catalog me sab courses dekhein — pasand aaye to payment bhej kar enroll ho jayein.</p>
     <a href="courses.php" class="dm-btn">Course Catalog dekhein <?= icon('arrow-right', 16) ?></a>
   </div></div>
@@ -125,7 +126,7 @@ foreach ($courses as $vc) {
 
 <?php if ($courses): ?>
 <div class="std-sec">
-  <h2>Mere courses</h2>
+  <h2>Enrolled courses</h2>
   <span class="std-count"><?= count($courses) ?> enrolled</span>
 </div>
 <div class="course-rows">
@@ -153,7 +154,7 @@ foreach ($courses as $vc) {
       <div class="cr-bar"><span style="width:<?= $pct ?>%"></span></div>
     </div>
     <div class="cr-side">
-      <div class="cr-pct"><?= $pct ?>%</div>
+      <div class="cr-pct"><?= watch_ring($pct, 20) ?><?= $pct ?>%</div>
       <a class="cr-go" href="course.php?course_id=<?= $c['id'] ?>"><?= $pct > 0 ? 'Continue' : 'Start' ?> <?= icon('arrow-right', 14) ?></a>
     </div>
   </div>

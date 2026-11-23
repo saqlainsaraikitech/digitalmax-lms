@@ -30,67 +30,64 @@ foreach ($course_stats as $cs) $max_students = max($max_students, (int)$cs['stud
 ?>
 <?php $page_title = 'Dashboard'; require __DIR__ . '/../inc/header.php'; ?>
 
-<div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
   <?php foreach ([
-      ['Students', $stats['students'], 'users', 'linear-gradient(135deg,#e8823f,#c74b25)'],
-      ['Courses', $stats['courses'], 'book-open', 'linear-gradient(135deg,#d97706,#b45309)'],
-      ['Enrollments', $stats['enroll'], 'graduation-cap', 'linear-gradient(135deg,#a16207,#7c4a03)'],
-      ['Pending payments', $stats['pay_pend'], 'credit-card', 'linear-gradient(135deg,#b45309,#1d3448)'],
-      ['Unchecked assignments', $stats['sub_pend'], 'clipboard-list', 'linear-gradient(135deg,#e8a13f,#c74b25)'],
-  ] as [$l, $v, $icn, $bg]): ?>
-    <div class="stat-card">
-      <div class="stat-ico" style="background:<?= $bg ?>"><?= icon($icn, 24) ?></div>
-      <div><div class="stat-num"><?= (int)$v ?></div><div class="stat-lbl"><?= e($l) ?></div></div>
+      ['Students', $stats['students'], false],
+      ['Courses', $stats['courses'], false],
+      ['Enrollments', $stats['enroll'], false],
+      ['Pending payments', $stats['pay_pend'], true],
+      ['Unchecked assignments', $stats['sub_pend'], false],
+  ] as [$l, $v, $attn]): ?>
+    <div class="stat-card<?= ($attn && (int)$v > 0) ? ' is-attention' : '' ?>">
+      <div><div class="stat-lbl"><?= e($l) ?></div><div class="stat-num"><?= number_format((int)$v) ?></div></div>
     </div>
   <?php endforeach; ?>
 </div>
 
-<div class="grid md:grid-cols-2 gap-5">
+<div class="grid md:grid-cols-2 gap-4">
   <div class="dm-card dm-card-pad">
-    <div class="dm-card-title"><?= icon('pin',16) ?> Mere tasks <span class="text-gray-400 font-semibold text-xs">(pending)</span></div>
-    <?php if (!$my_tasks): ?><p class="text-gray-400 text-sm">Koi pending task nahi. <?= icon('thumbs-up',16) ?></p><?php endif; ?>
+    <div class="dm-card-title">Mere tasks <span class="text-gray-400 text-xs">pending</span></div>
+    <?php if (!$my_tasks): ?><p class="text-gray-400 text-sm">Koi pending task nahi</p><?php endif; ?>
     <?php foreach ($my_tasks as $t): ?>
       <div class="dm-row">
-        <span><?= e($t['title']) ?> <span class="text-gray-400 text-xs">· due <?= e($t['due_date'] ?: '-') ?></span></span>
+        <span><?= e($t['title']) ?> <span class="meta">· due <?= e($t['due_date'] ?: '–') ?></span></span>
         <?= status_badge($t['status']) ?>
       </div>
     <?php endforeach; ?>
-    <?php if (can('p_tasks')): ?><a href="tasks.php" class="dm-card-link mt-3 inline-block">Sab tasks dekhein →</a><?php endif; ?>
+    <?php if (can('p_tasks')): ?><a href="tasks.php" class="dm-card-link mt-3 inline-block">Sab tasks dekhein</a><?php endif; ?>
   </div>
 
   <div class="dm-card dm-card-pad">
-    <div class="dm-card-title"><?= icon('wallet',16) ?> Recent payments</div>
-    <?php if (!$recent_pay): ?><p class="text-gray-400 text-sm">Abhi koi payment nahi.</p><?php endif; ?>
+    <div class="dm-card-title">Recent payments</div>
+    <?php if (!$recent_pay): ?><p class="text-gray-400 text-sm">Abhi koi payment nahi</p><?php endif; ?>
     <?php foreach ($recent_pay as $p): ?>
       <div class="dm-row">
         <span><?= e($p['name']) ?> · <b><?= money($p['amount']) ?></b></span>
         <?= status_badge($p['status']) ?>
       </div>
     <?php endforeach; ?>
-    <?php if (can('p_payments')): ?><a href="payments.php" class="dm-card-link mt-3 inline-block">Sab payments →</a><?php endif; ?>
+    <?php if (can('p_payments')): ?><a href="payments.php" class="dm-card-link mt-3 inline-block">Sab payments</a><?php endif; ?>
   </div>
 </div>
 
-<div class="dm-card dm-card-pad mt-5">
-  <div class="dm-card-title"><?= icon('bar-chart', 18) ?> Course-wise enrollments <span class="text-gray-400 font-semibold text-xs">(kis course me kitne students)</span></div>
+<div class="dm-card dm-card-pad mt-4">
+  <div class="dm-card-title">Course-wise enrollments <span class="text-gray-400 text-xs">kis course me kitne students</span></div>
   <?php if (!$course_stats): ?>
-    <p class="text-gray-400 text-sm">Abhi koi course nahi.</p>
+    <p class="text-gray-400 text-sm">Abhi koi course nahi</p>
   <?php else: ?>
-    <div class="space-y-3 mt-2">
-    <?php foreach ($course_stats as $cs):
+    <div class="dm-rank">
+    <?php $rk = 0; foreach ($course_stats as $cs): $rk++;
       $pct = $max_students > 0 ? (int)round($cs['students'] / $max_students * 100) : 0; ?>
       <div>
-        <div class="flex items-center justify-between gap-3 text-sm mb-1">
-          <span class="font-bold truncate"><?= e($cs['title']) ?>
-            <?php if (($cs['status'] ?? '') !== 'published'): ?><span class="text-xs font-semibold text-gray-400">(<?= e($cs['status']) ?>)</span><?php endif; ?>
-          </span>
-          <span class="whitespace-nowrap text-xs font-bold" style="color:#294461"><?= (int)$cs['students'] ?> students<?php if ($cs['revenue'] > 0): ?> · <span style="color:#15803d"><?= money($cs['revenue']) ?></span><?php endif; ?></span>
+        <div class="dm-rank-head">
+          <span class="t"><?= e($cs['title']) ?><?php if (($cs['status'] ?? '') !== 'published'): ?> <i><?= e($cs['status']) ?></i><?php endif; ?></span>
+          <span class="v"><b><?= number_format((int)$cs['students']) ?></b> students<?php if ($cs['revenue'] > 0): ?> · <?= money($cs['revenue']) ?> approved<?php endif; ?></span>
         </div>
-        <div class="h-2.5 rounded-full" style="background:#e2e8f0"><div class="h-2.5 rounded-full" style="width:<?= $pct ?>%; background:linear-gradient(90deg,#c74b25,#e8823f)"></div></div>
+        <div class="dm-rank-bar<?= ($rk === 1 && $pct > 0) ? ' lead' : '' ?>"><span style="width:<?= $pct ?>%"></span></div>
       </div>
     <?php endforeach; ?>
     </div>
-    <?php if (can('p_courses')): ?><a href="courses.php" class="dm-card-link mt-4 inline-block">Sab courses manage karein →</a><?php endif; ?>
+    <?php if (can('p_courses')): ?><a href="courses.php" class="dm-card-link mt-4 inline-block">Sab courses manage karein</a><?php endif; ?>
   <?php endif; ?>
 </div>
 
