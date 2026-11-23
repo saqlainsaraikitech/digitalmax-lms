@@ -9,7 +9,7 @@ if ($u['role'] !== 'student') redirect('../admin/index.php');
 $pdo = db();
 ensure_batch_tables();
 
-$cats = ['niche' => icon('target',16) . ' Niches', 'master_prompt' => icon('bot',16) . ' AI Prompts', 'ad_copy' => icon('edit',16) . ' Ad Copy', 'supplier_list' => icon('package',16) . ' Suppliers', 'ai' => icon('sparkles',16) . ' AI', 'original' => icon('star',16) . ' Original', 'copyright' => icon('shield',16) . ' Copyright'];
+$cats = ['niche' => 'Niches', 'master_prompt' => 'AI prompts', 'ad_copy' => 'Ad copy', 'supplier_list' => 'Suppliers', 'ai' => 'AI', 'original' => 'Original', 'copyright' => 'Copyright'];
 $cat = $_GET['cat'] ?? 'all';
 if ($cat !== 'all' && !isset($cats[$cat])) $cat = 'all';
 
@@ -42,7 +42,7 @@ require __DIR__ . '/../inc/header.php';
 <div class="dm-tabs mb-6">
   <a href="vault.php?cat=all" class="dm-tab <?= $cat === 'all' ? 'on' : '' ?>">All</a>
   <?php foreach ($cats as $k => $lbl): ?>
-  <a href="vault.php?cat=<?= $k ?>" class="dm-tab <?= $cat === $k ? 'on' : '' ?>"><?= $lbl ?></a>
+  <a href="vault.php?cat=<?= $k ?>" class="dm-tab <?= $cat === $k ? 'on' : '' ?>"><?= e($lbl) ?></a>
   <?php endforeach; ?>
 </div>
 
@@ -57,7 +57,7 @@ require __DIR__ . '/../inc/header.php';
       <div>
         <b><?= e($r['title']) ?></b>
         <div class="mt-1.5 space-x-1">
-          <span class="dm-tag"><?= $cats[$r['category']] ?? $r['category'] ?></span>
+          <span class="dm-tag"><?= e($cats[$r['category']] ?? $r['category']) ?></span>
           <?php if ($r['course_title']): ?><span class="meta"><?= e($r['course_title']) ?></span><?php endif; ?>
         </div>
       </div>
