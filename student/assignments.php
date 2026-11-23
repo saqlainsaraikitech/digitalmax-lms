@@ -70,7 +70,7 @@ require __DIR__ . '/../inc/header.php';
       <input name="answer_text" class="w-full border rounded px-2 py-1.5 text-sm"></div>
     <div><label class="text-xs font-semibold">File (PDF/DOC/ZIP/Image)</label>
       <input type="file" name="sub_file" class="text-sm"></div>
-    <button class="text-white px-4 py-2 rounded text-sm font-semibold" style="background:#c74b25">Submit</button>
+    <button class="dm-btn">Submit</button>
   </form>
 </div>
 <?php endforeach; ?>

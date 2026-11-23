@@ -43,24 +43,23 @@ require __DIR__ . '/../inc/header.php';
 
 <div class="mb-4"><a href="index.php" class="text-sm underline text-gray-500">← My courses</a></div>
 
-<div class="bg-white rounded-lg shadow p-5 mb-6">
-  <div class="flex gap-4 flex-wrap">
-    <?php if ($course['thumbnail']): ?><img src="../<?= e($course['thumbnail']) ?>" class="h-24 rounded"><?php endif; ?>
+<div class="dm-card dm-card-pad mb-6">
+  <div class="flex gap-5 flex-wrap">
+    <?php if ($course['thumbnail']): ?><img src="../<?= e($course['thumbnail']) ?>" class="dm-course-thumb" alt=""><?php endif; ?>
     <div class="flex-1 min-w-60">
-      <h2 class="text-xl font-bold"><?= e($course['title']) ?></h2>
+      <h2 class="dm-page-h"><?= e($course['title']) ?></h2>
       <?php if ($enrolled && $my_batch): ?><div class="mt-2"><?= batch_badge($my_batch) ?></div><?php endif; ?>
-      <p class="text-sm text-gray-500 mt-1"><?= nl2br(e(mb_substr($course['description'] ?? '', 0, 300))) ?></p>
+      <p class="dm-muted-p mt-2"><?= nl2br(e(mb_substr($course['description'] ?? '', 0, 300))) ?></p>
       <?php if ($enrolled):
         $pct = course_progress($u['id'], $course_id); ?>
-        <div class="mt-3 bg-gray-200 rounded-full h-2.5 max-w-md"><div class="h-2.5 rounded-full" style="width:<?= $pct ?>%;background:#c74b25"></div></div>
-        <div class="text-xs text-gray-500 mt-1"><?= $pct ?>% complete</div>
+        <div class="dm-progress-row"><?= watch_ring($pct, 20) ?><span class="dm-progress max-w-md"><div style="width:<?= $pct ?>%"></div></span><span class="num"><?= $pct ?>% complete</span></div>
         <?php if ($pct === 100): ?>
-          <a href="certificate.php?course_id=<?= $course_id ?>" class="inline-block mt-3 text-white text-sm px-5 py-2.5 rounded-lg font-bold" style="background:linear-gradient(90deg,#c74b25,#e8823f)"><?= icon('graduation-cap',16) ?> Download Certificate</a>
+          <a href="certificate.php?course_id=<?= $course_id ?>" class="dm-btn mt-4"><?= icon('graduation-cap',16) ?> Download certificate</a>
         <?php elseif ($next_id): ?>
-          <a href="lecture.php?course_id=<?= $course_id ?>&lecture_id=<?= $next_id ?>" class="inline-block mt-2 text-white text-sm px-4 py-2 rounded font-semibold" style="background:#c74b25">Continue →</a>
+          <a href="lecture.php?course_id=<?= $course_id ?>&lecture_id=<?= $next_id ?>" class="dm-btn mt-4"><?= icon('play',16) ?> Continue</a>
         <?php endif; ?>
       <?php else: ?>
-        <div class="mt-3 text-sm bg-yellow-50 border border-yellow-300 text-yellow-800 p-3 rounded">Aap is course me enroll nahi hain — sirf <b>free preview</b> lectures dekh sakte hain.</div>
+        <div class="pay-warn mt-4" style="margin-bottom:0"><?= icon('lock',18) ?><span>Aap is course me enroll nahi hain. Sirf <b>free preview</b> lectures dekh sakte hain.</span></div>
       <?php endif; ?>
     </div>
   </div>
@@ -73,8 +72,8 @@ $show_section = function($title, $list) use ($course_id, $enrolled, $visible_map
     $tot = count($list);
     $dn = 0; foreach ($list as $l) if ($l['done']) $dn++;
     $spct = $tot ? (int)round($dn / $tot * 100) : 0;
-    echo '<div class="bg-white rounded-lg shadow mb-4"><div class="p-4 border-b bg-gray-50 rounded-t-lg font-bold">'
-       . e($title)
+    echo '<div class="dm-card mb-4 overflow-hidden"><div class="dm-sec-head">'
+       . '<span class="t">' . e($title) . '</span>'
        . '<div class="sec-progress"><div class="bar"><i style="width:' . $spct . '%"></i></div><span>' . $dn . ' of ' . $tot . ' lectures completed</span></div>'
        . '</div>';
     foreach ($list as $l) {
@@ -85,15 +84,15 @@ $show_section = function($title, $list) use ($course_id, $enrolled, $visible_map
         elseif ($enrolled && !$batch_locked && !$next_marked && (int)$l['id'] === (int)$next_id) { $sticon = '<span class="lec-status next">' . icon('play', 15) . '</span>'; $next_marked = true; }
         elseif ($enrolled && !$batch_locked) $sticon = '<span class="lec-status todo">' . icon('play', 13) . '</span>';
         else $sticon = '<span class="lec-status todo">' . icon('lock', 13) . '</span>';
-        echo '<div class="p-3 border-b flex justify-between items-center text-sm gap-3">';
+        echo '<div class="dm-lec-row">';
         echo '<span class="flex items-center gap-3">' . $sticon . '<span>' . e($l['title']);
         if (is_new_lecture($l)) echo new_badge();
-        echo ' <span class="text-gray-400">· ' . e($l['duration'] ?: '') . '</span>';
-        if ($l['is_preview']) echo ' <span class="ml-1 px-1.5 py-0.5 rounded text-xs bg-purple-100 text-purple-700">Free preview</span>';
+        if (!empty($l['duration'])) echo ' <span class="meta">· ' . e($l['duration']) . '</span>';
+        if ($l['is_preview']) echo ' <span class="dm-tag">Free preview</span>';
         echo '</span></span>';
-        if ($locked) echo '<span class="text-gray-400 text-xs">' . icon('lock',16) . ' Locked</span>';
-        elseif ($batch_locked) echo '<span class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">' . icon('lock',16) . ' Yeh content naye batch ke liye hai. Upgrade / Re-enroll to access.</span>';
-        else echo '<a href="lecture.php?course_id=' . $course_id . '&lecture_id=' . $l['id'] . '" class="underline font-semibold" style="color:#c74b25">' . ($l['done'] ? 'Rewatch →' : 'Watch →') . '</a>';
+        if ($locked) echo '<span class="meta">Locked</span>';
+        elseif ($batch_locked) echo '<span class="meta">Naye batch ke liye · re-enroll to access</span>';
+        else echo '<a href="lecture.php?course_id=' . $course_id . '&lecture_id=' . $l['id'] . '" class="cr-go">' . ($l['done'] ? 'Rewatch' : 'Watch') . '</a>';
         echo '</div>';
     }
     echo '</div>';

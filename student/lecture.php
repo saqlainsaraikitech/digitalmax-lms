@@ -109,13 +109,13 @@ require __DIR__ . '/../inc/header.php';
   </div>
 </div>
 
-<div class="bg-white rounded-lg shadow p-5 mb-4">
+<div class="dm-card dm-card-pad mb-4">
 
   <!-- Tabs: Video | Resources -->
-  <div class="flex gap-1 text-sm font-semibold border-b border-gray-200">
-    <button type="button" id="tabVideo" onclick="lmsTab('video')" class="px-4 py-2 rounded-t-lg" style="background:#c74b25;color:#fff">▶ Video</button>
+  <div class="dm-tabs" role="tablist">
+    <button type="button" id="tabVideo" onclick="lmsTab('video')" class="dm-tab on" role="tab"><?= icon('play',16) ?> Video</button>
     <?php if ($has_res): ?>
-    <button type="button" id="tabRes" onclick="lmsTab('res')" class="px-4 py-2 rounded-t-lg" style="background:#f3f4f6;color:#4b5563"><?= icon('paperclip',16) ?> Resources & Downloads (<?= count($resources) ?>)</button>
+    <button type="button" id="tabRes" onclick="lmsTab('res')" class="dm-tab" role="tab"><?= icon('paperclip',16) ?> Resources <span class="num" style="color:var(--dm-muted)"><?= count($resources) ?></span></button>
     <?php endif; ?>
   </div>
 
@@ -350,9 +350,9 @@ require __DIR__ . '/../inc/header.php';
         $label = trim($r['label'] ?? '') !== '' ? $r['label'] : ($is_file ? 'Download file' : 'Open link');
       ?>
       <a href="<?= e($href) ?>" <?= $is_file ? 'download' : 'target="_blank" rel="noopener"' ?>
-         class="flex items-center justify-between bg-gray-50 hover:bg-gray-100 border border-gray-200 p-3.5 rounded-xl transition">
-        <span class="text-sm font-semibold text-gray-800"><?= $is_file ? icon('file-text',16) : icon('link',16) ?> <?= e($label) ?></span>
-        <span class="text-xs font-bold px-3 py-1.5 rounded-lg text-white whitespace-nowrap" style="background:#c74b25"><?= $is_file ? icon('arrow-down',16) . ' Download' : '↗ Open' ?></span>
+         class="dm-res-row">
+        <span class="t"><?= $is_file ? icon('file-text',16) : icon('link',16) ?> <?= e($label) ?></span>
+        <span class="cr-go"><?= $is_file ? 'Download' : 'Open' ?></span>
       </a>
       <?php endforeach; ?>
     </div>
@@ -364,25 +364,24 @@ require __DIR__ . '/../inc/header.php';
     var pr = document.getElementById('paneRes');
     if (pr) pr.classList.toggle('hidden', isVideo);
     var tv = document.getElementById('tabVideo'), tr = document.getElementById('tabRes');
-    tv.style.background = isVideo ? '#c74b25' : '#f3f4f6';
-    tv.style.color = isVideo ? '#fff' : '#4b5563';
-    if (tr) { tr.style.background = isVideo ? '#f3f4f6' : '#c74b25'; tr.style.color = isVideo ? '#4b5563' : '#fff'; }
+    tv.classList.toggle('on', isVideo);
+    if (tr) tr.classList.toggle('on', !isVideo);
   }
   </script>
   <?php endif; ?>
 
   <div class="mt-4 flex gap-3 flex-wrap items-center" id="completeArea">
     <?php if ($done): ?>
-      <span class="px-4 py-2 rounded bg-green-100 text-green-800 text-sm font-semibold"><?= icon('check-circle',16) ?> Completed</span>
+      <span class="ca-done"><?= watch_ring(100, 18, 'Completed') ?> Completed</span>
     <?php else: ?>
-      <span class="text-sm text-gray-500"><?= icon('clock',16) ?> <b><?= gmdate('i:s', $required_sec) ?></b> dekhne par auto-complete ho jayega… <span id="watchCount" class="font-bold" style="color:#c74b25"></span></span>
-      <button type="button" onclick="tryManualComplete()" class="text-xs underline text-gray-400">manual mark</button>
+      <span class="dm-watch-note"><?= icon('clock',16) ?> <b class="num"><?= gmdate('i:s', $required_sec) ?></b> dekhne par lecture complete ho jayega <span id="watchCount" class="num"></span></span>
+      <button type="button" onclick="tryManualComplete()" class="dm-link-quiet">Mark manually</button>
     <?php endif; ?>
   </div>
 
   <?php if (trim($lec['notes'] ?? '')): ?>
-    <div class="mt-6"><h3 class="font-bold mb-2">Notes</h3>
-    <div class="text-sm text-gray-700 bg-gray-50 p-4 rounded"><?= nl2br(e($lec['notes'])) ?></div></div>
+    <div class="mt-6"><h3 class="dm-sub-h">Notes</h3>
+    <div class="dm-notes"><?= nl2br(e($lec['notes'])) ?></div></div>
   <?php endif; ?>
 </div>
 

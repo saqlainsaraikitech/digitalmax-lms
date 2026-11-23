@@ -42,6 +42,6 @@ require __DIR__ . '/../inc/header.php';
     <input name="old_pass" type="password" class="w-full border rounded px-3 py-2 mt-1"></div>
   <div><label class="text-sm">Naya password</label>
     <input name="new_pass" type="password" class="w-full border rounded px-3 py-2 mt-1"></div>
-  <button class="text-white px-6 py-2 rounded font-semibold" style="background:#c74b25">Save</button>
+  <button class="dm-btn">Save</button>
 </form>
 <?php require __DIR__ . '/../inc/footer.php'; ?>

@@ -75,9 +75,9 @@ $sup_wa = setting('whatsapp_number', '');
 ?>
 
 <?php if (!$has_enrollment): ?>
-<div class="pay-pending-banner" style="background:linear-gradient(90deg,#fdf6ec,#fff); border:1.5px solid #e8823f">
+<div class="pay-warn" style="flex-direction:column; gap:4px">
   <b><?= icon('lock', 18) ?> Access payment ke baad milega</b>
-  <p>Aapka LMS access <b>payment verification ke baad</b> activate hoga. Neeche official accounts par payment bhejein aur screenshot + TID submit karein — verify hote hi courses unlock ho jayenge.</p>
+  <span style="font-weight:400">Aapka LMS access <b>payment verification ke baad</b> activate hoga. Neeche official accounts par payment bhejein aur screenshot + TID submit karein. Verify hote hi courses unlock ho jayenge.</span>
 </div>
 <?php endif; ?>
 
@@ -85,33 +85,29 @@ $sup_wa = setting('whatsapp_number', '');
   $pp = $pending[0];
   $pmi = pay_method_info($pp['method'] ?? '', $pay_methods, $method_map); ?>
 <div class="pay-pending-banner">
-  <b><?= icon('clock', 18) ?> Payment Pending Verification</b>
-  <p>Aapne <b><?= money($pp['amount']) ?></b><?php if ($pmi): ?> is account par bheje hain: <b><?= e($pmi['method_name']) ?><?= $pmi['account_number'] ? ' (' . e($pmi['account_number']) . ')' : '' ?></b><?php endif; ?>. Hamari team <b>15–60 minute</b> mein verify kar rahi hai — verify hote hi course unlock ho jayega.</p>
+  <b><?= icon('clock', 18) ?> Payment verification pending</b>
+  <p>Aapne <b><?= money($pp['amount']) ?></b><?php if ($pmi): ?> is account par bheje hain: <b><?= e($pmi['method_name']) ?><?= $pmi['account_number'] ? ' (' . e($pmi['account_number']) . ')' : '' ?></b><?php endif; ?>. Hamari team <b>15–60 minute</b> mein verify kar rahi hai. Verify hote hi course unlock ho jayega.</p>
   <?php if ($sup_wa): ?>
-  <a href="https://wa.me/<?= e(preg_replace('/\D+/', '', $sup_wa)) ?>?text=Assalam-o-Alaikum,%20meri%20payment%20verify%20nahi%20hui.%20TID:%20<?= e(urlencode($pp['trx_id'] ?? '')) ?>" target="_blank" rel="noopener" class="dm-btn" style="margin-top:12px; background:#25D366; box-shadow:0 10px 22px -10px rgba(37,211,102,.7)"><?= icon('phone', 16) ?> WhatsApp Support</a>
+  <a href="https://wa.me/<?= e(preg_replace('/\D+/', '', $sup_wa)) ?>?text=Assalam-o-Alaikum,%20meri%20payment%20verify%20nahi%20hui.%20TID:%20<?= e(urlencode($pp['trx_id'] ?? '')) ?>" target="_blank" rel="noopener" class="dm-btn-ghost" style="margin-top:16px"><?= icon('phone', 16) ?> WhatsApp support</a>
   <?php endif; ?>
 </div>
 <?php endif; ?>
 
 <?php if ($pay_methods): ?>
-<h2 class="font-extrabold mb-1">Payment Process — 4 Steps</h2>
-<p class="text-sm text-gray-500 mb-3">Enroll karne ka tareeqa:</p>
-<div class="grid md:grid-cols-3 gap-3 mb-6">
+<h2 class="dm-sub-h">Payment ka tareeqa</h2>
+<p class="dm-muted-p mb-4">Teen steps me enroll karein</p>
+<ol class="dm-steps mb-8">
   <?php
   $steps = [
-    ['wallet', 'Step 1', 'Neeche official account par fees bhejein — screenshot + TID rakhein.'],
-    ['clipboard-list', 'Step 2', 'Neeche form me screenshot + TID submit karein.'],
-    ['check-circle', 'Step 3', '15–60 min me verify hote hi courses unlock ho jayenge.'],
+    ['wallet', 'Fee bhejein', 'Neeche official account par fee bhejein. Screenshot aur TID rakhein.'],
+    ['clipboard-list', 'Submit karein', 'Neeche form me screenshot aur TID submit karein.'],
+    ['check-circle', 'Unlock', '15–60 minute me verify hote hi courses unlock ho jayenge.'],
   ];
-  foreach ($steps as [$ic, $t, $d]): ?>
-  <div class="bg-white rounded-xl border p-4" style="border-color:#e2e8f0">
-    <span class="inline-flex items-center justify-center w-9 h-9 rounded-full text-white font-extrabold mb-2" style="background:#c74b25"><?= icon($ic, 16) ?></span>
-    <div class="font-bold text-sm"><?= $t ?></div>
-    <div class="text-xs text-gray-500 mt-1"><?= $d ?></div>
-  </div>
+  foreach ($steps as $si => [$ic, $t, $d]): ?>
+  <li><span class="k num"><?= $si + 1 ?></span><div><b><?= $t ?></b><span><?= $d ?></span></div></li>
   <?php endforeach; ?>
-</div>
-<h2 class="font-extrabold mb-1">Official Payment Accounts</h2>
+</ol>
+<h2 class="dm-sub-h">Official payment accounts</h2>
 <p class="text-sm text-gray-500 mb-3">Neeche diye gaye <b>official</b> accounts par hi fees bhejein — kisi aur number par bheji gayi payment ki zimmedari nahi hogi.</p>
 <div class="pay-cards">
   <?php foreach ($pay_methods as $m): ?><?= payment_method_card($m) ?><?php endforeach; ?>
@@ -124,7 +120,7 @@ $sup_wa = setting('whatsapp_number', '');
 <?php endif; ?>
 
 <div class="bg-white rounded-lg shadow p-6 mb-6 max-w-2xl">
-  <h2 class="font-bold mb-1">Payment bhejein</h2>
+  <h2 class="dm-sub-h">Payment submit karein</h2>
   <p class="text-sm text-gray-500 mb-4">Easypaisa / JazzCash par payment karke neeche screenshot upload karein. Admin verify karega.</p>
   <form method="post" enctype="multipart/form-data" class="space-y-4">
   <?= csrf_field() ?>
@@ -158,7 +154,7 @@ $sup_wa = setting('whatsapp_number', '');
       <span>I agree to the <a href="../refund-policy.php" target="_blank" rel="noopener">Terms &amp; Refund Policy</a> (Fees is strictly non-refundable once access is granted)<br><span class="urdu" dir="rtl">میں ریفنڈ پالیسی سے متفق ہوں</span></span>
     </label>
     <p class="text-xs text-gray-500 leading-relaxed" style="margin-top:10px">By enrolling, you acknowledge that results vary and this training does not guarantee specific earnings. <a href="../disclaimer.php" target="_blank" rel="noopener" style="color:#c74b25; font-weight:600">Read Earnings Disclaimer →</a></p>
-    <button id="paySubmitBtn" class="text-white px-6 py-2 rounded font-semibold" style="background:#c74b25">Payment submit</button>
+    <button id="paySubmitBtn" class="dm-btn">Submit payment</button>
   </form>
 </div>
 <div class="dm-legalbar" style="max-width:640px; margin-left:0; text-align:left"><?= legal_footer_links(' | ', '../') ?></div>
@@ -205,7 +201,7 @@ document.querySelectorAll('.pay-copy-btn').forEach(function(b){
     function done(){
       var toast = document.getElementById('payToast');
       if (toast) { toast.textContent = 'Copied: ' + t; toast.classList.add('show'); setTimeout(function(){ toast.classList.remove('show'); }, 1800); }
-      var sp = b.querySelector('span'); if (sp) { var old = sp.textContent; sp.textContent = 'Copied!'; setTimeout(function(){ sp.textContent = old; }, 1500); }
+      var sp = b.querySelector('span'); if (sp) { var old = sp.textContent; sp.textContent = 'Copied'; setTimeout(function(){ sp.textContent = old; }, 1500); }
     }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done);
     else { var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} document.body.removeChild(ta); done(); }
@@ -213,7 +209,7 @@ document.querySelectorAll('.pay-copy-btn').forEach(function(b){
 });
 </script>
 
-<h2 class="font-bold mb-3">Payment history</h2>
+<h2 class="dm-sub-h">Payment history</h2>
 <?php foreach ($history as $p): ?>
   <div class="bg-white rounded-lg shadow p-4 mb-3 text-sm flex justify-between flex-wrap gap-2">
     <div><b><?= money($p['amount']) ?></b> · <?= e(ucfirst($p['method'])) ?> · <?= e($p['course_title'] ?: '—') ?>

@@ -35,36 +35,35 @@ $page_title = 'Earn with DigitalMax';
 require __DIR__ . '/../inc/header.php';
 ?>
 
-<div class="rounded-2xl p-6 md:p-8 text-white mb-6" style="background:linear-gradient(135deg,#1d3448,#5c2a0c)">
-  <h2 class="text-2xl font-extrabold"><?= icon('wallet',16) ?> Earn with DigitalMax</h2>
-  <p class="text-white/70 text-sm mt-2 max-w-xl">Apna referral link doston se share karein — jo bhi us link se aakar course ki payment karega, uski <b>approved</b> payment par aapko <b><?= e($pct) ?>% commission</b> milega!</p>
-  <div class="mt-4 flex gap-2 flex-wrap">
-    <input id="refLink" readonly value="<?= e($link) ?>" class="flex-1 min-w-60 bg-white/15 border border-white/25 rounded-xl px-4 py-3 text-sm text-white font-mono">
-    <button onclick="copyRef()" id="copyBtn" class="bg-white font-bold px-6 py-3 rounded-xl text-sm" style="color:#c74b25"><?= icon('clipboard-list',16) ?> Copy link</button>
+<div class="dm-earn mb-6">
+  <h2>Har approved referral par <?= e($pct) ?>% commission</h2>
+  <p>Apna referral link doston se share karein. Jo bhi is link se aakar course ki payment karega, uski <b>approved</b> payment par aapko <b><?= e($pct) ?>%</b> milega.</p>
+  <div class="dm-earn-link">
+    <input id="refLink" readonly value="<?= e($link) ?>" aria-label="Your referral link">
+    <button onclick="copyRef()" id="copyBtn" class="dm-btn"><?= icon('clipboard-list',16) ?> Copy link</button>
   </div>
 </div>
 
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-  <?php foreach ([['Total Clicks', $stats['clicks'], false], ['Total Referrals', $stats['referrals'], false], ['Commission Earned', money($stats['earned']), true], ['Pending Payout', money($stats['pending']), true]] as [$l, $v, $hl]): ?>
-    <div class="bg-white rounded-lg shadow p-5">
-      <div class="text-2xl font-bold" <?= $hl ? 'style="color:#c74b25"' : '' ?>><?= $v ?></div>
-      <div class="text-sm text-gray-500 mt-1"><?= e($l) ?></div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+  <?php foreach ([['Link clicks', number_format((int)$stats['clicks']), false], ['Referrals', number_format((int)$stats['referrals']), false], ['Commission earned', money($stats['earned']), true], ['Pending payout', money($stats['pending']), false]] as [$l, $v, $hl]): ?>
+    <div class="stat-card<?= $hl ? ' is-attention' : '' ?>">
+      <div><div class="stat-lbl"><?= e($l) ?></div><div class="stat-num"><?= $v ?></div></div>
     </div>
   <?php endforeach; ?>
 </div>
 
-<div class="bg-white rounded-lg shadow p-5 mb-6">
-  <h3 class="font-bold mb-3">Kaise kaam karta hai?</h3>
+<div class="dm-card dm-card-pad mb-6">
+  <h3 class="dm-sub-h">Kaise kaam karta hai</h3>
   <ol class="text-sm text-gray-600 space-y-2 list-decimal ml-5">
     <li>Apna referral link copy karke WhatsApp / Facebook / TikTok par share karein.</li>
     <li>Jo link se aayega, uska visit count hoga (cookie 30 din tak yaad rehta hai).</li>
-    <li>Jab woh student payment bhejega aur admin <b>approve</b> karega → aapko <b><?= e($pct) ?>%</b> commission.</li>
+    <li>Jab woh student payment bhejega aur admin <b>approve</b> karega, aapko <b><?= e($pct) ?>%</b> commission.</li>
     <li>Admin aapke Easypaisa/JazzCash number (aapke profile wale phone) par payout bhejega.</li>
   </ol>
-  <p class="text-xs text-gray-400 mt-3"><?= icon('lightbulb',16) ?> Apna phone number <a href="profile.php" class="underline" style="color:#c74b25">Profile</a> me update rakhein taake payout aap tak pahunche.</p>
+  <p class="dm-muted-p mt-3">Apna phone number <a href="profile.php" class="dm-card-link">Profile</a> me update rakhein taake payout aap tak pahunche.</p>
 </div>
 
-<h3 class="font-bold mb-3">Recent referrals</h3>
+<h3 class="dm-sub-h">Recent referrals</h3>
 <div class="bg-white rounded-lg shadow overflow-x-auto">
 <table class="w-full text-sm">
   <tr class="bg-gray-50 text-left text-gray-500"><th class="p-3">Date</th><th class="p-3">Student</th><th class="p-3">Course</th><th class="p-3">Payment</th><th class="p-3">Commission</th><th class="p-3">Status</th></tr>
@@ -78,7 +77,7 @@ require __DIR__ . '/../inc/header.php';
     <td class="p-3"><?= $r['status'] === 'approved' ? ($r['commission_paid'] ? status_badge('paid') : status_badge('pending')) : status_badge($r['status']) ?></td>
   </tr>
   <?php endforeach; ?>
-  <?php if (!$recent): ?><tr><td colspan="6" class="p-6 text-center text-gray-400">Abhi koi referral nahi — link share karna shuru karein! <?= icon('rocket',16) ?></td></tr><?php endif; ?>
+  <?php if (!$recent): ?><tr><td colspan="6" class="p-6 text-center text-gray-400">Abhi koi referral nahi. Link share karke shuru karein</td></tr><?php endif; ?>
 </table>
 </div>
 
@@ -86,7 +85,7 @@ require __DIR__ . '/../inc/header.php';
 function copyRef(){
   var i = document.getElementById('refLink');
   var b = document.getElementById('copyBtn');
-  function done(){ b.innerHTML = '' + <?= icon('check-circle',14) ?> + ' Copied!'; setTimeout(function(){ b.innerHTML = '' + <?= icon('clipboard-list',14) ?> + ' Copy link'; }, 1500); }
+  function done(){ b.innerHTML = <?= json_encode(icon('check-circle',16) . ' Copied') ?>; setTimeout(function(){ b.innerHTML = <?= json_encode(icon('clipboard-list',16) . ' Copy link') ?>; }, 1500); }
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(i.value).then(done).catch(function(){ i.select(); document.execCommand('copy'); done(); });
   } else { i.select(); document.execCommand('copy'); done(); }

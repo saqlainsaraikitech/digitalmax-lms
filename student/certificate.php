@@ -40,9 +40,10 @@ $verify_url = 'https://lms.digitalmx.pk/verify.php?code=' . urlencode($cert['cer
   body { font-family: Georgia, 'Times New Roman', serif; background:#e2e8f0; min-height:100vh;
          display:flex; flex-direction:column; align-items:center; padding:28px 14px; }
   .toolbar { display:flex; gap:10px; margin-bottom:22px; font-family:'Segoe UI',system-ui,sans-serif; }
-  .btn { display:inline-block; padding:10px 22px; border-radius:10px; font-weight:700; font-size:14px;
+  .btn { display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 16px; border-radius:8px; font-weight:500; font-size:14px;
          text-decoration:none; cursor:pointer; border:none; }
-  .btn-print { background:linear-gradient(90deg,#c74b25,#e8823f); color:#fff; }
+  .btn-print { background:#c74b25; color:#fff; }
+  .btn-print:hover { background:#a93e1e; }
   .btn-back { background:#fff; color:#444; border:1px solid #ccc; }
   #cert { width:100%; max-width:1020px; aspect-ratio:1.414/1; background:#fdf6ec; padding:14px;
           box-shadow:0 12px 44px rgba(0,0,0,.28); }
@@ -114,7 +115,7 @@ $verify_url = 'https://lms.digitalmx.pk/verify.php?code=' . urlencode($cert['cer
 </div>
 
 <p style="font-family:'Segoe UI',sans-serif;font-size:12px;color:#8a8272;margin-top:16px;" class="toolbar">
-  Tip: "Print / Save as PDF" dabayein → Destination me "Save as PDF" select karein.
+  Tip: "Print / Save as PDF" dabayein, phir Destination me "Save as PDF" chunein
 </p>
 
 </body>

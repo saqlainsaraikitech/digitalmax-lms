@@ -35,19 +35,19 @@ require __DIR__ . '/../inc/header.php';
 ?>
 
 <div class="mb-6">
-  <h2 class="text-xl font-bold"><?= icon('archive',16) ?> Niches & Master Prompts Vault</h2>
+  <h2 class="dm-page-h">Niches & master prompts</h2>
   <p class="text-sm text-gray-500 mt-1">Tested niches aur copy-paste ready prompts — 1 click me copy karein, apne kaam me lagayein.</p>
 </div>
 
-<div class="flex gap-2 flex-wrap mb-6">
-  <a href="vault.php?cat=all" class="px-4 py-2 rounded-full text-sm font-bold <?= $cat === 'all' ? 'text-white' : 'bg-white' ?>" <?= $cat === 'all' ? 'style="background:#c74b25"' : '' ?>>All</a>
+<div class="dm-tabs mb-6">
+  <a href="vault.php?cat=all" class="dm-tab <?= $cat === 'all' ? 'on' : '' ?>">All</a>
   <?php foreach ($cats as $k => $lbl): ?>
-  <a href="vault.php?cat=<?= $k ?>" class="px-4 py-2 rounded-full text-sm font-bold <?= $cat === $k ? 'text-white' : 'bg-white' ?>" <?= $cat === $k ? 'style="background:#c74b25"' : '' ?>><?= $lbl ?></a>
+  <a href="vault.php?cat=<?= $k ?>" class="dm-tab <?= $cat === $k ? 'on' : '' ?>"><?= $lbl ?></a>
   <?php endforeach; ?>
 </div>
 
 <?php if (!$rows): ?>
-  <div class="bg-white rounded-lg shadow p-10 text-center text-gray-400 text-sm">Is category me abhi kuch nahi hai — jald add hoga! <?= icon('rocket',16) ?></div>
+  <div class="dm-card std-empty"><p style="margin:0">Is category me abhi kuch nahi hai. Jald add hoga</p></div>
 <?php endif; ?>
 
 <div class="grid md:grid-cols-2 gap-5">
@@ -57,8 +57,8 @@ require __DIR__ . '/../inc/header.php';
       <div>
         <b><?= e($r['title']) ?></b>
         <div class="mt-1.5 space-x-1">
-          <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-semibold"><?= $cats[$r['category']] ?? $r['category'] ?></span>
-          <?php if ($r['course_title']): ?><span class="text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full"><?= icon('book-open',16) ?> <?= e($r['course_title']) ?></span><?php endif; ?>
+          <span class="dm-tag"><?= $cats[$r['category']] ?? $r['category'] ?></span>
+          <?php if ($r['course_title']): ?><span class="meta"><?= e($r['course_title']) ?></span><?php endif; ?>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@ require __DIR__ . '/../inc/header.php';
       <?= vault_markdown($r['content']) ?>
     </div>
     <div class="p-3 border-t bg-gray-50 flex gap-2">
-      <button onclick="copyVault(<?= $i ?>)" class="flex-1 text-white text-sm px-4 py-2 rounded-lg font-bold" style="background:#c74b25"><?= icon('clipboard-list',16) ?> Copy Prompt</button>
+      <button onclick="copyVault(<?= $i ?>, this)" class="dm-btn flex-1"><?= icon('clipboard-list',16) ?> Copy prompt</button>
       <a href="vault_print.php?id=<?= $r['id'] ?>" target="_blank" class="text-sm px-4 py-2 rounded-lg border font-semibold" title="Print / Save as PDF"><?= icon('printer',16) ?> PDF</a>
     </div>
     <textarea id="vault-raw-<?= $i ?>" class="hidden"><?= e($r['content']) ?></textarea>
@@ -75,9 +75,9 @@ require __DIR__ . '/../inc/header.php';
 </div>
 
 <script>
-function copyVault(i){
+function copyVault(i, srcBtn){
   var t = document.getElementById('vault-raw-' + i).value;
-  var done = function(btn){ var b = btn || event.target; var old = b.innerHTML; b.innerHTML = '' + <?= icon('check-circle',14) ?> + ' Copied!'; setTimeout(function(){ b.innerHTML = old; }, 1800); };
+  var done = function(btn){ var b = btn || srcBtn; if (!b) return; var old = b.innerHTML; b.innerHTML = <?= json_encode(icon('check-circle',16) . ' Copied') ?>; setTimeout(function(){ b.innerHTML = old; }, 1800); };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(t).then(function(){ done(); }).catch(function(){ fallback(); });
   } else fallback();

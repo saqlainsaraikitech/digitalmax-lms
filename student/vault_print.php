@@ -44,6 +44,6 @@ if ($r['course_id']) {
   <h1><?= e($r['title']) ?></h1>
   <div class="meta"><?= e(vault_category_label($r['category'])) ?><?= $r['course_title'] ? ' · ' . icon('book-open',16) . ' ' . e($r['course_title']) : '' ?> · DigitalMax LMS</div>
   <div class="content"><?= vault_markdown($r['content']) ?></div>
-  <div class="no-print" style="color:#aaa; font-size:12px; margin-top:30px">Tip: Print dialog me "Save as PDF" select karein <?= icon('file-text',16) ?></div>
+  <div class="no-print" style="color:#aaa; font-size:12px; margin-top:30px">Tip: Print dialog me "Save as PDF" chunein</div>
 </body>
 </html>

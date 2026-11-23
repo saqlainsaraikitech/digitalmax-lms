@@ -27,29 +27,28 @@ require __DIR__ . '/../inc/header.php';
   $is_enrolled = in_array((int)$c['id'], $enrolled, true);
   $pct = $is_enrolled ? course_progress($u['id'], $c['id']) : 0;
 ?>
-  <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
-    <?php if ($c['thumbnail']): ?><img src="../<?= e($c['thumbnail']) ?>" class="w-full aspect-video object-cover" alt="<?= e($c['title']) ?>"><?php endif; ?>
-    <div class="p-4 flex-1 flex flex-col">
+  <div class="course-card">
+    <?php if ($c['thumbnail']): ?><div class="course-thumb"><img src="../<?= e($c['thumbnail']) ?>" alt=""></div><?php endif; ?>
+    <div class="course-body">
       <div class="flex justify-between items-start gap-2">
-        <b><?= e($c['title']) ?></b>
+        <span class="course-title"><?= e($c['title']) ?></span>
         <?= $is_enrolled ? status_badge('paid') : '' ?>
       </div>
       <?php if ($is_enrolled): $cb2 = student_batch($u['id'], $c['id']); ?>
         <?php if ($cb2): ?><div class="mt-2"><?= batch_badge($cb2) ?></div><?php endif; ?>
       <?php endif; ?>
-      <p class="text-sm text-gray-500 mt-2 flex-1"><?= e(mb_substr($c['description'] ?? '', 0, 140)) ?><?= mb_strlen($c['description'] ?? '') > 140 ? '...' : '' ?></p>
+      <p class="dm-muted-p mt-2 flex-1"><?= e(mb_substr($c['description'] ?? '', 0, 140)) ?><?= mb_strlen($c['description'] ?? '') > 140 ? '…' : '' ?></p>
       <?php $dur = course_duration($c['id']); ?>
-      <div class="text-xs text-gray-400 mt-2"><?= (int)$c['total_lectures'] ?> lectures<?= $dur ? ' · ' . icon('clock',16) . ' ' . e($dur) : '' ?><?= $is_enrolled ? '' : ' · <b class="text-gray-700">' . money($c['price']) . '</b>' ?></div>
+      <div class="course-meta"><?= (int)$c['total_lectures'] ?> lectures<?= $dur ? ' · ' . e($dur) : '' ?><?= $is_enrolled ? '' : ' · <b style="color:var(--dm-ink)">' . money($c['price']) . '</b>' ?></div>
       <?php if ($is_enrolled): ?>
-        <div class="mt-3 bg-gray-200 rounded-full h-2"><div class="h-2 rounded-full" style="width:<?= $pct ?>%;background:#c74b25"></div></div>
-        <div class="text-xs text-gray-500 mt-1"><?= $pct ?>% complete</div>
-        <a href="course.php?course_id=<?= $c['id'] ?>" class="mt-3 text-center text-white text-sm px-4 py-2 rounded font-semibold" style="background:#c74b25">Continue learning →</a>
+        <div class="dm-progress-row"><?= watch_ring($pct, 20) ?><span class="dm-progress"><div style="width:<?= $pct ?>%"></div></span><span class="num"><?= $pct ?>%</span></div>
+        <a href="course.php?course_id=<?= $c['id'] ?>" class="dm-btn-ghost mt-4">Continue learning</a>
       <?php else: ?>
         <div class="mt-3 flex gap-2">
-          <a href="course.php?course_id=<?= $c['id'] ?>" class="flex-1 text-center text-sm px-3 py-2 rounded border font-semibold">Details dekhein</a>
-          <a href="payments.php?course_id=<?= $c['id'] ?>" class="flex-1 text-center text-white text-sm px-3 py-2 rounded font-semibold" style="background:#c74b25">Enroll — payment bhejein</a>
+          <a href="course.php?course_id=<?= $c['id'] ?>" class="dm-btn-ghost flex-1">Details</a>
+          <a href="payments.php?course_id=<?= $c['id'] ?>" class="dm-btn flex-1">Enroll</a>
         </div>
-        <p class="text-xs text-gray-400 mt-2">Payment verify hone ke baad admin aapko enroll kar dega.</p>
+        <p class="course-meta">Payment verify hone ke baad admin aapko enroll kar dega.</p>
       <?php endif; ?>
     </div>
   </div>

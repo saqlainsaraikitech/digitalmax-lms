@@ -705,7 +705,7 @@ function valid_wa_link($url) {
 }
 
 function wa_icon_svg($size = 30) {
-    return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+    return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 }
 
 /** Dashboard VIP card — DUAL WhatsApp access (Community + Discussion Group).
@@ -716,24 +716,24 @@ function vip_community_card($links, $course_title, $batch_name = null, $locked =
     if (!$has_c && !$has_g) return '';
     $tag = $batch_name ? '<b>' . e($batch_name) . '</b> · ' . e($course_title) : e($course_title);
     $btns = '';
-    if ($has_c) $btns .= '<button type="button" class="wa-join-btn font-extrabold px-5 py-3 rounded-xl text-green-900 bg-white hover:brightness-95 shadow-lg whitespace-nowrap text-sm" data-wa="' . e($links['community']) . '">' . icon('megaphone', 16) . ' Join Official Community</button>';
-    if ($has_g) $btns .= '<button type="button" class="wa-join-btn font-extrabold px-5 py-3 rounded-xl text-white hover:brightness-110 shadow-lg whitespace-nowrap text-sm" style="background:#0b5c4d" data-wa="' . e($links['group']) . '">' . wa_icon_svg(16) . ' Join Discussion Group</button>';
-    $inner = '<div class="flex items-center gap-4 flex-wrap">'
-        . '<div class="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0" style="background:rgba(255,255,255,.22)">' . wa_icon_svg(32) . '</div>'
-        . '<div class="flex-1 min-w-52"><div class="font-extrabold text-lg">Official Batch WhatsApp Access</div>'
-        . '<div class="text-sm text-white/85">Announcements ke liye official community, Q&amp;A ke liye discussion group.<br><span class="text-white/70 text-xs">' . $tag . '</span></div></div>'
-        . '<div class="flex gap-2 flex-wrap">' . $btns . '</div></div>';
+    if ($has_c) $btns .= '<button type="button" class="wa-join-btn dm-btn dm-btn-wa" data-wa="' . e($links['community']) . '">' . icon('megaphone', 16) . ' Join community</button>';
+    if ($has_g) $btns .= '<button type="button" class="wa-join-btn dm-btn-ghost" data-wa="' . e($links['group']) . '">' . icon('users', 16) . ' Join discussion group</button>';
+    $inner = '<div class="dm-wa-inner">'
+        . '<div class="dm-wa-mark">' . wa_icon_svg(22) . '</div>'
+        . '<div class="dm-wa-text"><b>Batch WhatsApp</b>'
+        . '<span>Announcements ke liye official community, Q&amp;A ke liye discussion group</span><span class="meta">' . $tag . '</span></div>'
+        . '<div class="dm-wa-btns">' . $btns . '</div></div>';
     if ($locked) {
-        return '<div class="rounded-2xl mb-4 relative overflow-hidden" style="background:linear-gradient(135deg,#128C7E,#25D366)">'
-            . '<div class="p-5 opacity-50 select-none" style="filter:blur(1px)">' . $inner . '</div>'
-            . '<div class="absolute inset-0 flex items-center justify-center"><span class="text-white font-bold text-sm px-5 py-2.5 rounded-full shadow" style="background:rgba(0,0,0,.55)">' . icon('lock',16) . ' Batch completed — group access ended</span></div></div>';
+        return '<div class="dm-wa is-locked">'
+            . '<div class="dm-wa-inner"><div class="dm-wa-mark">' . icon('lock', 18) . '</div>'
+            . '<div class="dm-wa-text"><b>Batch completed</b><span>WhatsApp group access khatam ho chuka hai</span><span class="meta">' . $tag . '</span></div></div></div>';
     }
-    return '<div class="rounded-2xl p-5 mb-4 text-white relative overflow-hidden shadow-lg" style="background:linear-gradient(135deg,#128C7E,#25D366)">' . $inner . '</div>';
+    return '<div class="dm-wa">' . $inner . '</div>';
 }
 
 /** Player screen chhota button (rules modal kholta hai) */
 function vip_community_btn($link, $batch_name = null) {
-    return '<button type="button" class="wa-join-btn inline-flex items-center gap-2 text-white text-sm font-bold px-4 py-2 rounded-xl shadow" style="background:#25D366" data-wa="' . e($link) . '">'
+    return '<button type="button" class="wa-join-btn dm-btn-ghost" data-wa="' . e($link) . '">'
         . wa_icon_svg(18) . ' Batch Community' . ($batch_name ? ' · ' . e($batch_name) : '') . '</button>';
 }
 
@@ -776,20 +776,19 @@ function wa_rules_modal() {
     $json = json_encode(array_map(fn($r) => ['en' => $r['rule_en'], 'ur' => $r['rule_ur']], $rules), JSON_UNESCAPED_UNICODE);
     return '<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">'
       . '<div id="waRulesModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.65)">'
-      . '<div class="bg-white rounded-2xl max-w-xl w-full max-h-[88vh] overflow-y-auto shadow-2xl">'
-      . '<div class="p-4 sticky top-0 z-10" style="background:linear-gradient(135deg,#b91c1c,#dc2626)">'
-      . '<div class="flex justify-between items-start gap-2">'
-      . '<div><b class="text-white text-base">' . icon('alert',16) . ' IMPORTANT COMMUNITY RULES &amp; CODE OF CONDUCT</b>'
-      . '<div class="text-white/90 text-sm mt-1" dir="rtl" style="font-family:\'Noto Nastaliq Urdu\',serif; line-height:2.2">ضروری اصول و ضوابط (واٹس ایپ کمیونٹی اور ڈسکشن گروپ)</div></div>'
-      . '<button type="button" onclick="closeWaRules()" class="text-white text-2xl leading-none px-2 shrink-0">' . icon('x',16) . '</button></div></div>'
+      . '<div class="dm-modal">'
+      . '<div class="dm-modal-head">'
+      . '<div><b>Community rules</b>'
+      . '<div class="ur" dir="rtl" lang="ur">ضروری اصول و ضوابط (واٹس ایپ کمیونٹی اور ڈسکشن گروپ)</div></div>'
+      . '<button type="button" onclick="closeWaRules()" class="dn-close" aria-label="Close">' . icon('x',18) . '</button></div>'
       . '<div class="p-5 text-gray-800">'
-      . '<div class="font-extrabold mb-2 text-sm"> ENGLISH:</div><ol id="waRulesEn" class="text-sm space-y-2 mb-6 ml-5" style="list-style:decimal"></ol>'
-      . '<div class="font-extrabold mb-2 text-sm" dir="rtl" style="text-align:right"> اردو:</div><ol id="waRulesUr" class="text-sm space-y-2 mb-6" dir="rtl" style="text-align:right; list-style:decimal; padding-right:22px; font-family:\'Noto Nastaliq Urdu\',serif; line-height:2.3"></ol>'
-      . '<label class="flex items-start gap-2 text-sm bg-amber-50 border border-amber-300 rounded-xl p-3 cursor-pointer font-semibold">'
+      . '<div class="dm-sub-h" style="font-size:14px">English</div><ol id="waRulesEn" class="text-sm space-y-2 mb-6 ml-5" style="list-style:decimal"></ol>'
+      . '<div class="dm-sub-h" style="font-size:14px; text-align:right" dir="rtl" lang="ur">اردو</div><ol id="waRulesUr" class="text-sm space-y-2 mb-6" dir="rtl" style="text-align:right; list-style:decimal; padding-right:22px; font-family:\'Noto Nastaliq Urdu\',serif; line-height:2.3"></ol>'
+      . '<label class="agree-box">'
       . '<input type="checkbox" id="waAgree" class="mt-1 shrink-0" onchange="setWaAgree(this.checked)">'
-      . '<span><span dir="rtl" style="font-family:\'Noto Nastaliq Urdu\',serif; line-height:2.2">میں نے تمام اصول پڑھ لیے ہیں اور میں ان کی پابندی کرنے کا پابند ہوں</span><br><span class="text-gray-600 font-normal">I have read and agree to all rules</span></span></label>'
-      . '<a id="waJoinBtn" href="#" target="_blank" rel="noopener" class="block text-center mt-4 font-extrabold px-6 py-3.5 rounded-xl text-white text-lg" style="background:#25D366; opacity:.45; pointer-events:none">' . icon('arrow-right',16) . ' Join WhatsApp Now</a>'
-      . '<p class="text-xs text-gray-400 text-center mt-2">Checkbox tick kiye baghair link nahi khulega.</p>'
+      . '<span><span dir="rtl" style="font-family:\'Noto Nastaliq Urdu\',serif; line-height:2.2">میں نے تمام اصول پڑھ لیے ہیں اور میں ان کی پابندی کرنے کا پابند ہوں</span><br><span style="color:var(--dm-text-2)">I have read and agree to all rules</span></span></label>'
+      . '<a id="waJoinBtn" href="#" target="_blank" rel="noopener" class="dm-btn dm-btn-wa w-full mt-2" style="opacity:.45; pointer-events:none">' . wa_icon_svg(16) . ' Join WhatsApp</a>'
+      . '<p class="course-meta" style="text-align:center">Checkbox tick kiye baghair link nahi khulega</p>'
       . '</div></div></div>'
       . '<script>var WA_RULES = ' . $json . ';'
       . 'function renderWaRules(){'

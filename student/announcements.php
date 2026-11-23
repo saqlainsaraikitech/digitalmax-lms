@@ -21,7 +21,7 @@ require __DIR__ . '/../inc/header.php';
 ?>
 
 <div class="mb-6">
-  <h2 class="text-xl font-bold"><?= icon('bell',16) ?> Notice Board</h2>
+  <h2 class="dm-page-h">Notice board</h2>
   <p class="text-sm text-gray-500 mt-1">Tamam zaroori elanat — classes, updates aur links.</p>
 </div>
 
@@ -42,7 +42,7 @@ require __DIR__ . '/../inc/header.php';
       </div>
       <div class="flex gap-2 items-center mt-2 text-xs text-gray-400 flex-wrap">
         <span><?= icon('calendar',16) ?> <?= date('d M Y · h:i A', strtotime($r['created_at'])) ?></span>
-        <span class="bg-gray-100 px-2 py-0.5 rounded-full"><?= ann_target_label($r) ?></span>
+        <span class="dm-tag dm-tag-n"><?= ann_target_label($r) ?></span>
       </div>
       <div class="text-sm text-gray-700 mt-3 leading-relaxed"><?= $r['message'] ?></div>
     </div>
